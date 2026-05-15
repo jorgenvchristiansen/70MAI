@@ -1,68 +1,66 @@
 # 70MAI DashCam Viewer
 
-Et simpelt macOS-program skrevet i SwiftUI, AVKit og MapKit.
+A simple macOS app written in SwiftUI, AVKit, and MapKit.
 
-## Funktioner
+## Features
 
-- Vælg SD-kortets rodmappe. Appen bruger automatisk `Normal/Front` og `Normal/Back`.
-- Bagudkompatibelt: Hvis du vælger en mappe, der direkte indeholder `Front` og `Back`, virker det også.
-- Finder matchende MP4-par med formatet:
-  - `NOyyyymmdd-hhmmss-nnnnnnF.MP4` i `Front`
-  - `NOyyyymmdd-hhmmss-nnnnnnB.MP4` i `Back`
-- Viser Front-videoen til venstre.
-- Viser Back-videoen i mindre størrelse øverst til højre.
-- Viser et MapKit-kort under Back-videoen og kan tegne valgt GPS-rute fra dashcam-loggen.
-- Start, pause, stop, forrige og næste videopar.
-- Lyd kan slås til/fra med kontakten **Lyd**. Lyd er slået fra som standard for mere stabil dashcam-afspilning.
-- Fortsætter automatisk med næste videopar, når både Front- og Back-videoen i det aktuelle par er slut.
+- Select the root folder of the SD card. The app automatically uses `Normal/Front` and `Normal/Back`.
+- Backward compatible: If you select a folder that directly contains `Front` and `Back`, that also works.
+- Finds matching MP4 pairs with the format:
+  - `NOyyyymmdd-hhmmss-nnnnnnF.MP4` in `Front`
+  - `NOyyyymmdd-hhmmss-nnnnnnB.MP4` in `Back`
+- Displays the Front video on the left.
+- Displays the Back video in a smaller size at the top right.
+- Displays a MapKit map below the Back video and can draw the selected GPS route from the dashcam log.
+- Start, pause, stop, previous, and next video pair.
+- Audio can be turned on/off with the **Audio** toggle. Audio is off by default for more stable dashcam playback.
+- Automatically continues to the next video pair when both the Front and Back videos in the current pair have ended.
 
-## Brug
+## Usage
 
-1. Åbn `70MAI DashCam Viewer.xcodeproj` i Xcode.
-2. Vælg target `70MAI DashCam Viewer` og tryk Run.
-3. Klik **Vælg SD-kort…** og vælg SD-kortets rodmappe. Appen åbner automatisk `Normal/Front` og `Normal/Back`.
-4. Vælg et videopar og klik **Start**.
-5. Når et videopar er færdigt, starter næste matchende par automatisk. Efter sidste par stopper afspilningen.
+1. Open `70MAI DashCam Viewer.xcodeproj` in Xcode.
+2. Select the target `70MAI DashCam Viewer` and press Run.
+3. Click **Select SD Card…** and choose the root folder of the SD card. The app automatically opens `Normal/Front` and `Normal/Back`.
+4. Select a video pair and click **Start**.
+5. When a video pair has finished, the next matching pair starts automatically. After the last pair, playback stops.
 
-## Krav
+## Requirements
 
-- macOS 13 eller nyere.
-- Xcode 15 eller nyere anbefales.
+- macOS 14.1 or newer.
 
-## Robust afspilning
+## Robust Playback
 
-Denne version forbereder begge `AVPlayerItem`s og venter på `.readyToPlay`, før afspilning startes. Den forsøger også at genoptage afspilning ved korte AVPlayer-stalls. Hvis en video fejler under forberedelse eller afspilning, vises fejlen i statuslinjen, og appen springer automatisk videre til næste videopar, hvis der findes et.
+This version prepares both `AVPlayerItem`s and waits for `.readyToPlay` before playback starts. It also attempts to resume playback during brief AVPlayer stalls. If a video fails during preparation or playback, the error is shown in the status bar, and the app automatically skips to the next video pair if one exists.
 
-## Kort / rutevisning
+## Map / Route Display
 
-Kortet er passivt under videoafspilning. Det opdateres kun, når du vælger en anden rute i dropdown-menuen. Den valgte rute tegnes som en polyline med start- og slutmarkør.
+The map is passive during video playback. It is only updated when you select a different route in the dropdown menu. The selected route is drawn as a polyline with start and end markers.
 
-## Stabil video-visning uden macOS billedanalyse
+## Stable Video Display Without macOS Image Analysis
 
-Denne version bruger en egen `StableAVPlayerView` baseret på `AVPlayerView` i stedet for SwiftUI `VideoPlayer`.
-`allowsVideoFrameAnalysis` er slået fra, så macOS ikke forsøger Live Text / visuel analyse af videobilledet under afspilning.
-Derudover er der en lille watchdog, som forsøger at genstarte afspilningen hvis en spiller stopper kortvarigt uden normal slut-/fejlbesked.
+This version uses a custom `StableAVPlayerView` based on `AVPlayerView` instead of SwiftUI `VideoPlayer`.
+`allowsVideoFrameAnalysis` is disabled, so macOS does not attempt Live Text / visual analysis of the video frame during playback.
+In addition, there is a small watchdog that attempts to restart playback if a player briefly stops without a normal end or error message.
 
+## GPS Routes
 
-## GPS-ruter
+If the SD card’s root folder contains `GPSData000001.txt`, the app reads routes from the file. The line `$V02` marks the start of a new route. The app uses the first four comma-separated fields: epoch timestamp, GPS status, latitude, and longitude. The camera’s epoch value is corrected by +8 hours to UTC, and times are then displayed as Danish local time (`Europe/Copenhagen`). The routes are shown in the dropdown menu above the map, and the selected route is drawn on the map. There is a fallback to the earlier incorrect filename `GPSDate000001.txt` if a test file still has that name.
 
-Hvis SD-kortets rodmappe indeholder `GPSData000001.txt`, læser appen ruter fra filen. Linjen `$V02` markerer start på en ny rute. Appen bruger de første fire kommaseparerede felter: epoch-timestamp, GPS-status, latitude og longitude. Kameraets epoch-værdi korrigeres med +8 timer til UTC, og tider vises derefter som dansk lokal tid (`Europe/Copenhagen`). Ruterne vises i dropdown-menuen over kortet, og den valgte rute tegnes på kortet. Der er fallback til det tidligere fejlnavn `GPSDate000001.txt`, hvis en testfil stadig hedder sådan.
+## Settings
 
-## Indstillinger
+This version now includes a separate **Settings…** window.
 
-Versionen indeholder nu et separat vindue **Indstillinger…**.
+Here you can change:
 
-Her kan du ændre:
+- **Timestamp offset** in hours. The default is `8`, meaning the GPS file’s epoch value + 8 hours before display.
+- **Time zone** as an IANA ID, for example `Europe/Copenhagen`.
 
-- **Timestamp-offset** i timer. Standard er `8`, dvs. GPS-filens epoch-værdi + 8 timer før visning.
-- **Tidszone** som IANA-id, fx `Europe/Copenhagen`.
+Press **Recalculate** to reload `GPSData000001.txt` with the new settings. The videos do not need to be scanned again.
 
-Tryk **Genberegn** for at genlæse `GPSData000001.txt` med de nye indstillinger. Videoerne behøver ikke at blive scannet igen.
+## Filtering Videos by Selected Route
 
-## Filtrering af videoer efter valgt rute
+When you select a route in the dropdown menu, the app filters the video list to the video pairs where the video start time from the filename is greater than or equal to the route start time and less than or equal to the route end time. If you select **All videos**, the filtering is removed again.
 
-Når du vælger en rute i dropdown-menuen, filtrerer appen videolisten til de videopar, hvor videoens starttid fra filnavnet er større end eller lig med rutens starttid og mindre end eller lig med rutens sluttid. Vælger du **Alle videoer**, fjernes filtreringen igen.
+### Settings
 
-### Indstillinger
-
-Knappen **Indstillinger…** åbner et separat vindue, hvor du kan ændre kameraets timestamp-offset og vælge eller skrive en IANA-tidszone, fx `Europe/Copenhagen`. Tryk **Genberegn** for at genlæse GPSData000001.txt og opdatere ruterne.
+The **Settings…** button opens a separate window where you can change the camera’s timestamp offset and select or enter an IANA time zone, for example `Europe/Copenhagen`. Press **Recalculate** to reload `GPSData000001.txt` and update the routes.
