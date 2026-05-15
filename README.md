@@ -17,12 +17,9 @@ A simple macOS app written in SwiftUI, AVKit, and MapKit.
 - Automatically continues to the next video pair when both the Front and Back videos in the current pair have ended.
 
 ## Usage
-
-1. Open `70MAI DashCam Viewer.xcodeproj` in Xcode.
-2. Select the target `70MAI DashCam Viewer` and press Run.
-3. Click **Select SD Card…** and choose the root folder of the SD card. The app automatically opens `Normal/Front` and `Normal/Back`.
-4. Select a video pair and click **Start**.
-5. When a video pair has finished, the next matching pair starts automatically. After the last pair, playback stops.
+1. Click **Select SD Card…** and choose the root folder of the SD card. The app automatically opens `Normal/Front` and `Normal/Back`.
+2. Select a video pair and click **Start**.
+3. When a video pair has finished, the next matching pair starts automatically. After the last pair, playback stops.
 
 ## Requirements
 
