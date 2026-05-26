@@ -6,6 +6,6 @@ A simple macOS-program written in SwiftUI, AVKit og MapKit.
 
 1.0 	Initial release
 
-1.1 	Optimized geocoding
-	Speed graph
+1.1 	Optimized geocoding,
+	Speed graph,
 	Settings window changed
